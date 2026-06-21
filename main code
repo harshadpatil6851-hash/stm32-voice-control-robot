@@ -1,0 +1,93 @@
+#define IN1 PB0
+#define IN2 PB1
+#define IN3 PB10
+#define IN4 PB11
+
+char command;
+
+void setup() {
+  pinMode(IN1, OUTPUT);
+  pinMode(IN2, OUTPUT);
+  pinMode(IN3, OUTPUT);
+  pinMode(IN4, OUTPUT);
+
+  Serial.begin(9600);    // For debugging (USB)
+  Serial1.begin(9600);   // Bluetooth (HC-05)
+
+  stopMotors();
+  Serial.println("STM32 Robot Ready");
+}
+
+void loop() {
+  if (Serial1.available()) {
+    command = Serial1.read();
+    Serial.print("Received: ");
+    Serial.println(command);
+
+    switch (command) {
+      case 'F':
+        forward();
+        delay(2000);
+        stopMotors();
+        break;
+
+      case 'B':
+        backward();
+        delay(2000);
+        stopMotors();
+        break;
+
+      case 'L':
+        left();
+        delay(250);
+        stopMotors();
+        break;
+
+      case 'R':
+        right();
+        delay(250);
+        stopMotors();
+        break;
+
+      default:
+        stopMotors();
+        break;
+    }
+  }
+}
+
+// ---- Motor control ----
+void forward() {
+  digitalWrite(IN1, HIGH);
+  digitalWrite(IN2, LOW);
+  digitalWrite(IN3, HIGH);
+  digitalWrite(IN4, LOW);
+}
+
+void backward() {
+  digitalWrite(IN1, LOW);
+  digitalWrite(IN2, HIGH);
+  digitalWrite(IN3, LOW);
+  digitalWrite(IN4, HIGH);
+}
+
+void left() {
+  digitalWrite(IN1, HIGH);
+  digitalWrite(IN2, LOW);
+  digitalWrite(IN3, LOW);
+  digitalWrite(IN4, HIGH);
+}
+
+void right() {
+  digitalWrite(IN1, LOW);
+  digitalWrite(IN2, HIGH);
+  digitalWrite(IN3, HIGH);
+  digitalWrite(IN4, LOW);
+}
+
+void stopMotors() {
+  digitalWrite(IN1, LOW);
+  digitalWrite(IN2, LOW);
+  digitalWrite(IN3, LOW);
+  digitalWrite(IN4, LOW);
+}
